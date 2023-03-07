@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cadastro de Pessoas</title>
+</head>
+
+<body>
+    <h1>Cadastro de Pessoas</h1>
+    <form id="cadastro-form">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome"><br>
+
+        <label for="sexo">Sexo:</label>
+        <select id="sexo" name="sexo">
+			<option value="masculino">Masculino</option>
+			<option value="feminino">Feminino</option>
+		</select><br>
+
+        <label for="nivel">Nível:</label>
+        <input type="number" id="nivel" name="nivel" min="1" max="3"><br>
+
+        <input type="submit" value="Cadastrar">
+    </form>
+
+    <h2>Pessoas cadastradas:</h2>
+    <ul id="pessoas-lista"></ul>
+
+    <h2>Duplas formadas:</h2>
+    <ul id="duplas-lista"></ul>
+
+    <script>
+        // Definir uma lista vazia para armazenar as pessoas cadastradas
+        let pessoas = [];
+
+        // Função para adicionar uma pessoa à lista de pessoas cadastradas
+        function adicionarPessoa(nome, sexo, nivel) {
+            const pessoa = {
+                nome: nome,
+                sexo: sexo,
+                nivel: nivel
+            };
+            pessoas.push(pessoa);
+            atualizarPessoasLista();
+        }
+
+        // Função para atualizar a lista de pessoas cadastradas na página
+        function atualizarPessoasLista() {
+            const lista = document.getElementById("pessoas-lista");
+            lista.innerHTML = "";
+            pessoas.forEach(pessoa => {
+                const li = document.createElement("li");
+                li.innerText = `${pessoa.nome} - ${pessoa.sexo} - Nível ${pessoa.nivel}`;
+                lista.appendChild(li);
+            });
+        }
+
+        // Função para formar as duplas a partir da lista de pessoas cadastradas
+        function formarDuplas() {
+            const duplas = [];
+            // Separar as pessoas por sexo
+            const homens = pessoas.filter(pessoa => pessoa.sexo === "masculino");
+            const mulheres = pessoas.filter(pessoa => pessoa.sexo === "feminino");
+            // Formar as duplas
+            while (homens.length > 0 && mulheres.length > 0) {
+                const homem = homens.pop();
+                const mulher = mulheres.pop();
+                const dupla = [homem, mulher];
+                duplas.push(dupla);
+            }
+            atualizarDuplasLista(duplas);
+        }
+
+        // Função para atualizar a lista de duplas formadas na página
+        function atualizarDuplasLista(duplas) {
+            const lista = document.getElementById("duplas-lista");
+            lista.innerHTML = "";
+            duplas.forEach(dupla => {
+                const li = document.createElement("li");
+                li.innerText = `${dupla[0].nome} e ${dupla[1].nome}`;
+                lista.appendChild(li);
+            });
+        }
+
+
+
+
+
+        // Adicionar um evento de submissão ao formulário de cadastro
+        const form = document.getElementById("cadastro-form");
+        form.addEventListener("submit",
+            function(event) {
+                event.preventDefault(); // Prevenir o comportamento padrão de envio do formulário
+                const nome = document.getElementById("nome").value;
+                const sexo = document.getElementById("sexo").value;
+                const nivel = document.getElementById("nivel").value;
+                adicionarPessoa(nome, sexo, nivel);
+                form.reset(); // Limpar o formulário após o cadastro!
+            });
+
+
+        // Adicionar um botão para formar as duplas
+        const formarDuplasBtn = document.createElement("button");
+        formarDuplasBtn.innerText = "Formar duplas";
+        formarDuplasBtn.addEventListener("click", formarDuplas);
+        document.body.appendChild(formarDuplasBtn);
+    </script>
+</body>
+
+</html>
